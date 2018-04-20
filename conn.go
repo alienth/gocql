@@ -146,6 +146,7 @@ type Conn struct {
 	version         uint8
 	currentKeyspace string
 	host            *HostInfo
+	ip              net.IP
 
 	session *Session
 
@@ -201,6 +202,7 @@ func (s *Session) dial(host *HostInfo, cfg *ConnConfig, errorHandler ConnErrorHa
 		calls:         make(map[int]*callReq),
 		version:       uint8(cfg.ProtoVersion),
 		addr:          conn.RemoteAddr().String(),
+		ip:            ip,
 		errorHandler:  errorHandler,
 		compressor:    cfg.Compressor,
 		auth:          cfg.Authenticator,
@@ -1355,6 +1357,10 @@ func (c *Conn) localHostInfo(ctx context.Context) (*HostInfo, error) {
 	host, err := c.session.hostInfoFromMap(row, port)
 	if err != nil {
 		return nil, err
+	}
+
+	if host.connectAddress == nil {
+		host.connectAddress = c.ip
 	}
 
 	return c.session.ring.addOrUpdate(host), nil

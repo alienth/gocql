@@ -544,6 +544,10 @@ func (s *Session) hostInfoFromMap(row map[string]interface{}, port int) (*HostIn
 		// Not sure what the port field will be called until the JIRA issue is complete
 	}
 
+	if host.rpcAddress == nil {
+		return &host, nil
+	}
+
 	ip, port := s.cfg.translateAddressPort(host.ConnectAddress(), host.port)
 	host.connectAddress = ip
 	host.port = port
