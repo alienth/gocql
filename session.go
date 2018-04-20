@@ -231,13 +231,13 @@ func (s *Session) init() error {
 	// cluster is using the newer system schema or not... however, if control
 	// connection is disable, we really have no choice, so we just make our
 	// best guess...
-	if !s.cfg.disableControlConn && s.cfg.DisableInitialHostLookup {
-		newer, _ := checkSystemSchema(s.control)
-		s.useSystemSchema = newer
-	} else {
-		host := s.ring.rrHost()
-		s.useSystemSchema = host.Version().Major >= 3
-	}
+	// if !s.cfg.disableControlConn && s.cfg.DisableInitialHostLookup {
+	// 	newer, _ := checkSystemSchema(s.control)
+	// 	s.useSystemSchema = newer
+	// } else {
+	host := s.ring.rrHost()
+	s.useSystemSchema = host.Version().Major >= 3
+	// }
 
 	if s.pool.Size() == 0 {
 		return ErrNoConnectionsStarted
